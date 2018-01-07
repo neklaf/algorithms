@@ -1,0 +1,5 @@
+$ javac InsertionSortAlgorithm.java 
+$ java InsertionSortAlgorithm
+Length: 3
+vector: {13, 23, 16}
+Sorted vector: {13, 16, 23}

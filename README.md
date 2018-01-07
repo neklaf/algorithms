@@ -1,2 +1,4 @@
 # algorithms
-Algorithms Hodgepodge repository
+Algorithms hodgepodge repository
+
+ - Sorting
