@@ -1,4 +1,7 @@
 # algorithms
 Algorithms hodgepodge repository
 
- - Sorting
+## Sorting
+### Insertion Sort
+## Trees
+### AVL
