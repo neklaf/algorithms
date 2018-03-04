@@ -481,8 +481,8 @@ class AVLTree:
             print "AVLTree::draw_tree(self) ini"
         if self.is_empty():
             print None
-        #else:
-        #    self.__root.draw('\t')
+        else:
+            self.__root.draw('\t')
 
     def balancing(self):
         if log:
