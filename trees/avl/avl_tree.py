@@ -19,9 +19,9 @@ import sys
 # https://docs.python.org/2/library/sys.html
 sys.setrecursionlimit(4000)
 
+# Just a way to implement an enumeration
 def enum(**enums):
     return type('Enum', (), enums)
-
 Balances = enum(left_heavy=0, balanced=1, right_heavy=2)
 
 log = False
@@ -75,8 +75,8 @@ class AVLNode:
         if log:
             print "AVLNode::draw(self, margin) ini"
         if self != None:
-            print margin + "key: ", self.key
-            print margin + "value: ", self.value
+            print margin + "k: ", self.key
+            print margin + "v: ", self.value
             if self.balance == Balances.right_heavy:
                 print margin + "Right Balanced"
             elif self.balance == Balances.left_heavy:
@@ -86,16 +86,20 @@ class AVLNode:
 
             if self.left != None:
                 margin = "\t" + margin
-                if '(L)' not in margin: 
-                    margin = margin + "--(L) "
+                if '(R)' in margin:
+                    margin = margin.replace("(R)","(L)")
+                if '(L)' not in margin:
+                    margin = margin + "(L)"
                 #    self.left.draw("\t" + margin + "--(L) ")
                 #else:
                 #    self.left.draw("\t" + margin)
                 self.left.draw(margin)
             if self.right != None:
                 margin = "\t" + margin
+                if '(L)' in margin:
+                    margin = margin.replace("(L)", "(R)")
                 if '(R)' not in margin:
-                    margin = margin + "--(R) "
+                    margin = margin + "(R)"
                     #self.right.draw("\t" + margin + "--(R) ")
                 #else:
                 #    self.right.draw("\t" + margin)
