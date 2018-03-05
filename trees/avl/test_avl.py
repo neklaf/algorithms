@@ -1,18 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# How to debug Python code!
-#
-#Python: http://docs.python.org/2/library/pdb.html :
+'''
+How to debug Python code!
 
-# python -m pdb debugfile.py
+Python: http://docs.python.org/2/library/pdb.html :
 
-#Once in:
-#b (line #) – sets breakpoint
-#s – step into
-#n – next
-#c – continue
-#r – run til return
+$ python -m pdb debugfile.py
+
+Once in:
+b (line #) – sets breakpoint
+s – step into
+n – next
+c – continue
+r – run til return
+'''
 
 from avl_tree import AVLTree, AVLNode
 
@@ -33,29 +35,25 @@ def main():
         searchs = int(sys.argv[4])
         deletes = int(sys.argv[5])
         
-        sys.stdout.write("Inserts: %s" % inserts)
-        print ""
-        sys.stdout.write("Searchs: %s" % searchs)
-        print ""
-        sys.stdout.write("Deletes: %s" % deletes)
-        print ""
+        sys.stdout.write("Inserts: %s\t" % inserts)
+        sys.stdout.write("Searchs: %s\t" % searchs)
+        sys.stdout.write("Deletes: %s\n" % deletes)
 
         f = open(words_file_name, "r")
         f2 = open(meanings_file_name, "r")
 
         """ INSERTS PART """
         avl = AVLTree(node = AVLNode())
-        print "Is an empty tree: ", avl.is_empty()
-        print "Draw a tree: ", avl.draw_tree()
-        print "Tree height: ", avl.height()
+        #print "Is an empty tree: ", avl.is_empty()
+        #print "Tree height: ", avl.height()
         t0_1 = time.time()
         t0 = time.strftime('%s')
         words = []
         for i in range(0, inserts):
             word = f.readline()
-            print "word read: " , word.strip()
+            #print "word read: " , word.strip()
             definition = f2.readline()
-            print "meaning read: ", definition.strip()
+            #print "meaning read: ", definition.strip()
             if not word: break
             if not definition: break
             words.append(word.strip())
@@ -74,18 +72,20 @@ def main():
         if searchs > 0:
             t0 = time.time()
             for s in range(0, searchs):
-                word = words[random.randint(0, len(words))]
-                avl.search(word, success, value)
+                #word = f.readline()
+                word = words[random.randint(0, len(words)-1)]
+                avl.search(word)
             t1 = time.time()
             t_search = t1 - t0
             print "Search operations done! -> time ", t_search
             print ""
 
         """ DELETE PART """
-        if deletes > 0:
+        if deletes > 0 and deletes <= inserts:
             t0 = time.time()
             for s in range(0, deletes):
-                word = words[random.randint(0, len(words))]
+                word = words[random.randint(0, len(words)-1)]
+                print 'word to delete: ', word
                 avl.delete(word)
             t1 = time.time()
             t_delete = t1 - t0
@@ -97,5 +97,6 @@ def main():
         f2.close()
         print "Resultant tree:"
         avl.draw_tree()
+        print "Height tree: ", avl.height()
 
 main()

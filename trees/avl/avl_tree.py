@@ -1,6 +1,19 @@
 #!/usr/bin/python
 # -*- coding: ascii -*-
 
+'''
+AVL (Adelson-Velsky and Landis) Tree: A balanced binary search tree where the height of the two subtrees (children) of a node differs by at most one. 
+Look-up, insertion, and deletion are O(log n), where n is the number of nodes in the tree. 
+(Definition from http://xlinux.nist.gov/dads//HTML/avltree.html)
+
+In big O notation terms: (http://en.wikipedia.org/wiki/AVL_tree)
+Algorithm   Average     Worst Case
+Space       O(n)        O(n)
+Search      O(log n)    O(log n)
+Insert      O(log n)    O(log n)
+Delete      O(log n)    O(log n)
+'''
+
 import sys
 
 # https://docs.python.org/2/library/sys.html
@@ -12,6 +25,7 @@ def enum(**enums):
 Balances = enum(left_heavy=0, balanced=1, right_heavy=2)
 
 log = False
+debug = True
 
 class Rebalancing:
     __status = None
@@ -26,7 +40,7 @@ class Rebalancing:
         return self.__status
 
 class AVLNode:
-    """This class represents a node as a subtree"""
+    """Class to represent a AVL tree node"""
     key = ""
     value = ""
     left = None
@@ -50,6 +64,7 @@ class AVLNode:
         self.right = right
         self.balance = balance'''
 
+    '''Method to know if a node is empty'''
     def is_empty(self):
         if log:
             print "AVLNode::is_empty(self) ini"
@@ -62,34 +77,67 @@ class AVLNode:
         if self != None:
             print margin + "key: ", self.key
             print margin + "value: ", self.value
-            print margin + "balance: ", self.balance
-            if self.left != None:
-                self.left.draw(margin + " (L)")
-            if self.right != None:
-                self.right.draw(margin + " (R)")
+            if self.balance == Balances.right_heavy:
+                print margin + "Right Balanced"
+            elif self.balance == Balances.left_heavy:
+                print margin + "Left Balanced"
+            else:
+                print margin + "Balanced" 
 
+            if self.left != None:
+                margin = "\t" + margin
+                if '(L)' not in margin: 
+                    margin = margin + "--(L) "
+                #    self.left.draw("\t" + margin + "--(L) ")
+                #else:
+                #    self.left.draw("\t" + margin)
+                self.left.draw(margin)
+            if self.right != None:
+                margin = "\t" + margin
+                if '(R)' not in margin:
+                    margin = margin + "--(R) "
+                    #self.right.draw("\t" + margin + "--(R) ")
+                #else:
+                #    self.right.draw("\t" + margin)
+                self.right.draw(margin)    
+
+    '''Remove a node from a tree'''
     def remove(self, key, rebalance):
         if log:
             print "AVLNode::remove(self, key, rebalance) ini"
         if self != None:
+            if debug:
+                print 'self != None'
             if key < self.key:
+                if debug:
+                    print 'key ' + key + '< self.key ' +  self.key
                 self.left.remove(key, rebalance)
             if rebalance:
+                if debug:
+                    print 'left rebalance'
                 self.left_balance(rebalance)
-            elif self.key < key:
+            elif key > self.key:
+                if debug:
+                    print 'key ' + key + ' > self.key ' + self.key 
                 self.right.remove(key, rebalance)
             else:
                 if self.left == None:
+                    if debug:
+                        print 'self.left == None'
                     aux = self
                     self = self.right
                     aux = None
                     rebalance = True
                 elif self.right == None:
+                    if debug:
+                        print 'self.right == None'
                     aux = self
                     self = self.left
                     aux = None
                     rebalance = True
                 else:
+                    if debug:
+                        print 'invoking delete_maximum_key'
                     self.left.delete_maximum_key(self.key, self.value, rebalance)
                     if rebalance:
                         self.left_balance(rebalance)
@@ -110,20 +158,21 @@ class AVLNode:
             if rebalance:
                 self.right_balance(rebalance)
 
-    def search(self, key, success, value):
+    def search(self, key):
         if log:    
-            print "AVLNode::search(self) ini"
+            print "AVLNode::search(self, key) ini"
+        success = False
         if self == None:
-            success = False
+            return False
         else:
             if self.key == key:
                 success = True
-                value = self.value
             elif key < self.key:
                 self.left.search(key, success, value)
             else:
                 self.right.search(key, success, value)
-    
+        return success
+
     def test_balancing_factors(self):
         if log:
             print "AVLNode::test_balancing_factors(self) ini"
@@ -176,27 +225,38 @@ class AVLNode:
         else:
             return 1
 
+    '''Method to balance a letf balanced tree'''
     def left_balance(self, rebalance):
         if log:
             print "AVLNode::left_balance(self, rebalance) ini"
         if self.balance == Balances.left_heavy:
+            if debug:
+                print 'self.balance ', self.balance, ' == Balances.left_heavy ', Balances.left_heavy
             self.balance = Balances.balanced
         elif self.balance == Balances.balanced:
+            if debug:
+                print 'self.balance ', self.balance, ' == Balances.balanced ', Balances.balanced
             self.balance = Balances.right_heavy
             rebalance = False
         elif self.balance == Balances.right_heavy:
+            if debug:
+                print 'self.balance ', self.balance, ' == Balances.right_heavy ', Balances.right_heavy
             right_subtree = self.right
             balance_subtree = right_subtree.balance
             if balance_subtree != left_heavy:
+                if debug:
+                    print 'balance_subtree != left_heavy'
                 self.right = right_subtree.left
-                rigth_subtree.left = self
+                right_subtree.left = self
                 if right_subtree == Balances.balanced:
+                    if debug:
+                        print 'right_subtree == Balances.balanced'
                     self.balance = Balances.right_heavy
                     right_subtree.balance = Balances.left_heavy
                     rebalance = False
                 else:
                     self.balance = balanced
-                    rigth_subtree.balance = Balances.balanced
+                    right_subtree.balance = Balances.balanced
                 self = right_subtree
             else:
                 left_subtree = right_subtree.left
@@ -217,6 +277,7 @@ class AVLNode:
                 self = self.left
                 left_subtree.balance = Balances.balanced
     
+    '''Method to balance a right balanced tree'''
     def right_balance(self, rebalance):
         if log:
             print "AVLNode::right_balance(self, rebalance) ini"
@@ -261,19 +322,19 @@ class AVLNode:
 
 class AVLTree:
     """ 
-    AVL Trees: 
-    http://en.wikipedia.org/wiki/AVL_tree
-    http://xlinux.nist.gov/dads//HTML/avltree.html
-    
-    This Dictorionary ADT implementation is based on Javier Campos's Ada95 AVL implementation:
+    AVL Tree class
+
+    This Dictorionary ADT implementation is based on Javier Campos's Ada95 AVL implementation (@javifields):
     http://webdiis.unizar.es/asignaturas/EDA/gnat/ejemplos_TADs/arboles_AVL/campos/
-    
+
     There are many examples of a Python AVL tree implementation
     out there using Object Oriented Programming techniques, for instance:
     http://www.brpreiss.com/books/opus7/
     
     And in other programming language:
-    (C++) http://cis.stvincent.edu/html/tutorials/swd/avltrees/avltrees.html
+    (C++)
+    http://cis.stvincent.edu/html/tutorials/swd/avltrees/avltrees.html
+    https://www.auto.tuwien.ac.at/~blieb/woop/avl.html
     """
     __root = None
 
@@ -306,22 +367,32 @@ class AVLTree:
             print "AVLTree::get_root() ini"
         return self.__root
 
+    '''
+    Internal method to add a node in AVL tree
+    '''
     def __modify(self, key, value, rebalance):
         if log:
             print "AVLTree::__modify(key, value, rebalance) ini"
         if self.is_empty():
-            print "\tInsert node in tree and rebalance = True"
+            if debug:
+                print "Insert node in tree and rebalance = True"
             self.__root = AVLNode()
             self.__root.key = key
             self.__root.value = value
+            # Rebalance marked as true to the next??
             rebalance.setStatus(True)
         elif key < self.__root.key:
-            print "\tkey " + key + "< self.__root.key " + self.__root.key
+            if debug:
+                print "key " + key + "< self.__root.key " + self.__root.key
             if self.__root.left == None:
                 self.__root.left = AVLNode()
+                self.__root.left.key = key
+                self.__root.left.value = value
+                rebalance.setStatus(True)
+
             left_subtree = AVLTree(node = self.__root.left)
             left_subtree.__modify(key, value, rebalance)
-            if rebalance.getStatus(): 
+            if rebalance.getStatus():
                 print "key < self.__root.key -> rebalance"
                 if self.__root.balance == Balances.left_heavy:
                     print "key < self.__root.key -> Balances.left_heavy"
@@ -342,30 +413,47 @@ class AVLTree:
                     rebalance.setStatus(False)
                     #rebalance.__status = False
         elif key > self.__root.key:
-            print "\tkey ", key, " > self.__root.key ", self.__root.key
+            if debug:
+                print "key ", key, " > self.__root.key ", self.__root.key
             if self.__root.right == None:
                 self.__root.right = AVLNode()
+                self.__root.right.key = key
+                self.__root.right.value = value
+                rebalance.setStatus(True)
+            
             right_subtree = AVLTree(node = self.__root.right)
             right_subtree.__modify(key, value, rebalance)
+            if debug:
+                print "-------------paiting Root right subtree"
+                right_subtree.draw_tree()
+                print "-------------end Root right subtree"
             if rebalance.getStatus():
-                print "self.__root.key < key -> rebalance"
+                if debug:
+                    print "Rebalance status: ", rebalance.getStatus()
+                    print "key > self.__root.key => rebalance"
                 if self.__root.balance == Balances.left_heavy:
-                    print "self.__root.key < key -> Balances.left_heavy"
+                    if debug:
+                        print "key > self.__root.key => Balances.left_heavy"
                     self.__root.balance = Balances.balanced
                     rebalance.setStatus(False)
                 elif self.__root.balance == Balances.balanced:
-                    print "self.__root.key < key -> Balances.balanced"
+                    if debug:
+                        print "key > self.__root.key => Balances.balanced"
                     self.__root.balance = Balances.right_heavy
                 elif self.__root.balance == Balances.right_heavy:
-                    print "self.__root.key < key -> Balances.right_heavy"
+                    if debug:
+                        print "key > self.__root.key => Balances.right_heavy"
                     if self.__root.right.balance == Balances.right_heavy:
-                        print "right_rotation()"
+                        if debug:
+                            print "Invoking right_rotation()"
                         self.right_rotation()
                     else:
-                        print "right_left_rotation()"
+                        if debug:
+                            print "right_left_rotation()"
                         self.right_left_rotation()
                     rebalance.setStatus(False)
         else:
+            # Unchanged balance
             self.__root.value = value
 
     def modify(self, key, value):
@@ -449,13 +537,14 @@ class AVLTree:
         rebalance = False
         self.__root.remove(key, rebalance)
     
-    def search(self, key, success, value):
+    '''Method to search a key in tree'''
+    def search(self, key):
         if log:
-            print "AVLTree::delete(self, key, success, value) ini"
+            print "AVLTree::delete(self, key) ini"
         if self == None:
-            success = False
+            return False
         else:
-            self.__root.search(key, success, value)
+            return self.__root.search(key)
 
     def is_empty(self):
         if log:
@@ -474,15 +563,21 @@ class AVLTree:
     def height(self):
         if log:
             print "AVLTree::height(self) ini"
+        if self.is_empty:
+            return 0
         return self.__root.height()
 
-    def draw_tree(self):
+    '''
+    Method to draw a tree
+    '''
+    def draw_tree(self, margin=''):
         if log:
             print "AVLTree::draw_tree(self) ini"
         if self.is_empty():
-            print None
+            print '----EMPTY----'
         else:
-            self.__root.draw('\t')
+            print margin + '----'
+            self.__root.draw(margin)
 
     def balancing(self):
         if log:
