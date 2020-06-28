@@ -66,6 +66,17 @@ Sorted vector: {2, 7, 15, 18, 22, 23}
 
 ## Trees
 ### AVL
+AVL (Adelson-Velsky and Landis) Tree: A balanced binary search tree where the height of the two subtrees (children) of a node differs by at most one.
+Look-up, insertion, and deletion are O(log n), where n is the number of nodes in the tree.
+(Definition from [http://xlinux.nist.gov/dads//HTML/avltree.html](http://xlinux.nist.gov/dads//HTML/avltree.html)
+
+In big O notation terms: ([http://en.wikipedia.org/wiki/AVL_tree](http://en.wikipedia.org/wiki/AVL_tree)
+Algorithm   Average     Worst Case
+Space       O(n)        O(n)
+Search      O(log n)    O(log n)
+Insert      O(log n)    O(log n)
+Delete      O(log n)    O(log n)
+
 ```
 $ cd trees/avl
 
