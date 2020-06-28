@@ -68,14 +68,27 @@ Sorted vector: {2, 7, 15, 18, 22, 23}
 ### AVL
 AVL (Adelson-Velsky and Landis) Tree: A balanced binary search tree where the height of the two subtrees (children) of a node differs by at most one.
 Look-up, insertion, and deletion are O(log n), where n is the number of nodes in the tree.
-(Definition from [http://xlinux.nist.gov/dads//HTML/avltree.html](http://xlinux.nist.gov/dads//HTML/avltree.html)
+(Definition from [http://xlinux.nist.gov/dads//HTML/avltree.html](http://xlinux.nist.gov/dads//HTML/avltree.html) )
 
-In big O notation terms: ([http://en.wikipedia.org/wiki/AVL_tree](http://en.wikipedia.org/wiki/AVL_tree)
-Algorithm   Average     Worst Case
-Space       O(n)        O(n)
-Search      O(log n)    O(log n)
-Insert      O(log n)    O(log n)
-Delete      O(log n)    O(log n)
+In big O notation terms: ([http://en.wikipedia.org/wiki/AVL_tree](http://en.wikipedia.org/wiki/AVL_tree) )
+
+<table>
+<tr>
+<td>Operation</td>       <td>Average</td>        <td>Worst Case</td>
+</tr>
+<tr>
+<td>Space</td>       <td>O(n)</td>        <td>O(n)</td>
+</tr>
+<tr>
+<td>Search</td>       <td>O(log n)</td>        <td>O(log n)</td>
+</tr>
+<tr>
+<td>Insert</td>       <td>O(log n)</td>        <td>O(log n)</td>
+</tr>
+<tr>
+<td>Delete</td>       <td>O(log n)</td>        <td>O(log n)</td>
+</tr>
+</table>
 
 ```
 $ cd trees/avl
