@@ -2,6 +2,8 @@
 Algorithms hodgepodge repository
 
 ## Common
+### FizzBuzz algorithm:
+
 ```
 $ python3 fizzbuzz.py
 1
@@ -36,6 +38,22 @@ Fizz
 FizzBuzz
 ...
 ```
+
+### Fibonacci
+```
+$ python3 fibonacci.py
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+```
+
 ## Sorting
 ### Insertion Sort
 ```
